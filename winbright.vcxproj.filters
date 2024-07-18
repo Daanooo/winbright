@@ -9,5 +9,9 @@
     <ClCompile Include="src\winbright.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\monitor.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\monitor.h" />
   </ItemGroup>
 </Project>

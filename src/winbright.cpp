@@ -4,11 +4,12 @@
 #include <d3d9.h>
 #include <highlevelmonitorconfigurationapi.h>
 
+#include "monitor.h"
+
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "dxva2.lib")
 
-IDirect3D9* setupDirect3D()
-{
+IDirect3D9* setupDirect3D() {
     IDirect3D9* pD3D = Direct3DCreate9(D3D_SDK_VERSION);
     if (!pD3D) {
         std::cerr << "Error creating IDirect3D9 object" << std::endl;
@@ -17,8 +18,7 @@ IDirect3D9* setupDirect3D()
     return pD3D;
 }
 
-IDirect3DDevice9* setupD3DDevice(IDirect3D9* pD3D)
-{
+IDirect3DDevice9* setupD3DDevice(IDirect3D9* pD3D) {
     D3DPRESENT_PARAMETERS d3dpp{ };
     d3dpp.Windowed = TRUE;
     d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
@@ -34,8 +34,9 @@ IDirect3DDevice9* setupD3DDevice(IDirect3D9* pD3D)
     return device;
 }
 
-int main()
-{
+int main(int argc, char* argv[]) {
+    DWORD ulBrightness = strtoul(argv[1], nullptr, 10);
+
     // Setup Direct3D
     IDirect3D9* pD3D{ setupDirect3D()};
 
@@ -45,20 +46,15 @@ int main()
     DWORD monitorCount{ 0 };
     GetNumberOfPhysicalMonitorsFromIDirect3DDevice9(device, &monitorCount);
 
-    std::vector<PHYSICAL_MONITOR> monitors(monitorCount);
-    GetPhysicalMonitorsFromIDirect3DDevice9(device, monitorCount, monitors.data());
-    HANDLE monitorHandle = monitors[0].hPhysicalMonitor;
+    std::vector<PHYSICAL_MONITOR> physicalMonitors(monitorCount);
+    GetPhysicalMonitorsFromIDirect3DDevice9(device, monitorCount, physicalMonitors.data());
 
-    DWORD minBright{ 0 };
-    DWORD maxBright{ 0 };
-    DWORD currentBright{ 0 };
-    GetMonitorBrightness(monitorHandle, &minBright, &currentBright, &maxBright);
-
-    DWORD capabilities{ 0 };
-    DWORD supportedColorTemps{ 0 };
-    GetMonitorCapabilities(monitorHandle, &capabilities, &supportedColorTemps);
-
-    SetMonitorBrightness(monitorHandle, 35);
+    std::vector<Monitor> monitorObjects;
+    for (int i = 0; i < monitorCount; i++) {
+        HANDLE handle{ physicalMonitors[i].hPhysicalMonitor };
+        Monitor monitor(handle);
+        monitorObjects.push_back(monitor);
+    }
 
     device->Release();
     pD3D->Release();

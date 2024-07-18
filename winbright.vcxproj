@@ -127,7 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\monitor.cpp" />
     <ClCompile Include="src\winbright.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\monitor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
