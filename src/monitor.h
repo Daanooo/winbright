@@ -6,6 +6,7 @@ class Monitor
 {
 public:
 	Monitor(HANDLE handle);
+
 	HANDLE mHandle;
 	DWORD mMinBright{ 0 };
 	DWORD mMaxBright{ 0 };
@@ -13,7 +14,7 @@ public:
 	DWORD mCapabilities{ 0 };
 	DWORD mSupportedColorTemps{ 0 };
 
-	void setBrightness();
+	void setBrightness(int brightness);
 
 private:
 	void initialize();

@@ -34,15 +34,7 @@ IDirect3DDevice9* setupD3DDevice(IDirect3D9* pD3D) {
     return device;
 }
 
-int main(int argc, char* argv[]) {
-    DWORD ulBrightness = strtoul(argv[1], nullptr, 10);
-
-    // Setup Direct3D
-    IDirect3D9* pD3D{ setupDirect3D()};
-
-    // Setup Direct3D device
-    IDirect3DDevice9* device{ setupD3DDevice(pD3D) };
-
+std::vector<Monitor> getMonitors(IDirect3DDevice9* device) {
     DWORD monitorCount{ 0 };
     GetNumberOfPhysicalMonitorsFromIDirect3DDevice9(device, &monitorCount);
 
@@ -55,6 +47,22 @@ int main(int argc, char* argv[]) {
         Monitor monitor(handle);
         monitorObjects.push_back(monitor);
     }
+
+    return monitorObjects;
+}
+
+int main(int argc, char* argv[]) {
+    DWORD ulBrightness = strtoul(argv[1], nullptr, 10);
+
+    // Setup Direct3D
+    IDirect3D9* pD3D{ setupDirect3D()};
+
+    // Setup Direct3D device
+    IDirect3DDevice9* device{ setupD3DDevice(pD3D) };
+
+    std::vector<Monitor> monitors{ getMonitors(device) };
+
+    monitors[0].setBrightness(ulBrightness);
 
     device->Release();
     pD3D->Release();
